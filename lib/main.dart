@@ -1,3 +1,4 @@
+import 'package:amartha_logic_test/models/todo_model.dart';
 import 'package:amartha_logic_test/screens/home_screen.dart';
 import 'package:amartha_logic_test/utils/routes.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +6,9 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   await Hive.initFlutter();
+  Hive.registerAdapter(TodoModelAdapter());
+  var box = await Hive.openBox<TodoModel>('todoBox');
+
   runApp(const MyApp());
 }
 
