@@ -1,3 +1,4 @@
+import 'package:amartha_logic_test/utils/number_of_island_utils.dart';
 import 'package:flutter/material.dart';
 
 class NumberOfIslandScreen extends StatefulWidget {
@@ -17,40 +18,12 @@ class _NumberOfIslandScreenState extends State<NumberOfIslandScreen> {
     [0, 0, 0, 0, 0],
   ];
 
-  int islandCount = 0;
+  late NumberOfIslandUtils _numberOfIslandUtils;
 
-  void checkAround(x, y) {
-    int m = blocks.length;
-    int n = blocks[0].length;
-
-    if (x < 0 || y < 0 || x >= m || y >= n) {
-      return;
-    }
-
-    if (blocks[x][y] == 1) {
-      blocks[x][y] = 2;
-
-      checkAround(x - 1, y - 1);
-      checkAround(x - 1, y);
-      checkAround(x - 1, y + 1);
-      checkAround(x, y - 1);
-      checkAround(x, y + 1);
-      checkAround(x + 1, y - 1);
-      checkAround(x + 1, y);
-      checkAround(x + 1, y + 1);
-    }
-  }
-
-  void countIsland() {
-    for (int x = 0; x < blocks.length; x++) {
-      for (int y = 0; y < blocks[x].length; y++) {
-        if (blocks[x][y] == 1) {
-          islandCount++;
-          checkAround(x, y);
-        }
-      }
-    }
-    setState(() {});
+  @override
+  void initState() {
+    _numberOfIslandUtils = NumberOfIslandUtils(blocks);
+    super.initState();
   }
 
   @override
@@ -65,13 +38,16 @@ class _NumberOfIslandScreenState extends State<NumberOfIslandScreen> {
             _buildBlocks(),
             SizedBox(height: 32),
             MaterialButton(
-              onPressed: countIsland,
+              onPressed: () {
+                _numberOfIslandUtils.countIsland();
+                setState(() {});
+              },
               child: Text('Count Island'),
               color: Colors.blue,
               textColor: Colors.white,
             ),
             SizedBox(height: 32),
-            Text('Number of Island: $islandCount'),
+            Text('Number of Island: ${_numberOfIslandUtils.islandCount}'),
           ],
         ),
       ),
