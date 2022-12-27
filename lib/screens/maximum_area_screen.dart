@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:amartha_logic_test/utils/maximum_area_utils.dart';
 import 'package:flutter/material.dart';
 
 class MaximumAreaScreen extends StatefulWidget {
@@ -19,41 +20,12 @@ class _MaximumAreaScreenState extends State<MaximumAreaScreen> {
     [0, 0, 0, 0, 0],
   ];
 
-  int islandCount = 0;
-  List<int> islandCellCount = [];
-  int maximumArea = 0;
+  late MaximumAreaUtils _maximumAreaUtils;
 
-  void checkAround(x, y) {
-    int m = blocks.length;
-    int n = blocks[0].length;
-
-    if (x < 0 || y < 0 || x >= m || y >= n) {
-      return;
-    }
-
-    if (blocks[x][y] == 1) {
-      blocks[x][y] = 2;
-      islandCellCount[islandCount - 1] += 1;
-
-      checkAround(x - 1, y);
-      checkAround(x, y - 1);
-      checkAround(x, y + 1);
-      checkAround(x + 1, y);
-    }
-  }
-
-  void checkMaximumArea() {
-    for (int x = 0; x < blocks.length; x++) {
-      for (int y = 0; y < blocks[x].length; y++) {
-        if (blocks[x][y] == 1) {
-          islandCount++;
-          islandCellCount.add(0);
-          checkAround(x, y);
-        }
-      }
-    }
-    setState(() {});
-    maximumArea = islandCellCount.reduce(max);
+  @override
+  void initState() {
+    _maximumAreaUtils = MaximumAreaUtils(blocks);
+    super.initState();
   }
 
   @override
@@ -68,13 +40,17 @@ class _MaximumAreaScreenState extends State<MaximumAreaScreen> {
             _buildBlocks(),
             SizedBox(height: 32),
             MaterialButton(
-              onPressed: checkMaximumArea,
+              onPressed: () {
+                _maximumAreaUtils.checkMaximumArea();
+                setState(() {});
+              },
               child: Text('Count Maximum Area'),
               color: Colors.blue,
               textColor: Colors.white,
             ),
             SizedBox(height: 32),
-            Text('Number of Island: $islandCount\nMaximum Area: $maximumArea'),
+            Text(
+                'Number of Island: ${_maximumAreaUtils.islandCount}\nMaximum Area: ${_maximumAreaUtils.maximumArea}'),
           ],
         ),
       ),
