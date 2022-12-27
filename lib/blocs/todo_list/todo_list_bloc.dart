@@ -25,5 +25,10 @@ class TodoListBloc extends Bloc<TodoListEvent, TodoListState> {
   FutureOr<void> _toggleTodoEvent(
     ToggleTodoEvent event,
     Emitter<TodoListState> emit,
-  ) async {}
+  ) async {
+    final Box<TodoModel> todoBox = Hive.box('todoBox');
+    TodoModel? todoItem = todoBox.getAt(event.index);
+    todoItem?.hasDone = event.checked;
+    todoItem?.save();
+  }
 }

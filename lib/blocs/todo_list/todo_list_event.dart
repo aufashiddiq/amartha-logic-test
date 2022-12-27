@@ -17,10 +17,11 @@ class AddTodoEvent extends TodoListEvent {
 }
 
 class ToggleTodoEvent extends TodoListEvent {
+  final int index;
   final bool checked;
 
-  const ToggleTodoEvent(this.checked);
+  const ToggleTodoEvent(this.index, this.checked);
 
   @override
-  List<Object?> get props => [checked];
+  List<Object?> get props => [index, checked];
 }
