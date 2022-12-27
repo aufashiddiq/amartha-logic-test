@@ -1,3 +1,4 @@
+import 'package:amartha_logic_test/utils/find_path_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
@@ -18,47 +19,12 @@ class _FindPathScreenState extends State<FindPathScreen> {
     [0, 0, -1, 0, 0],
   ];
 
-  late List<List<bool>> checked = List.generate(
-    blocks.length,
-    (index) => List.generate(
-      blocks[index].length,
-      (index) => false,
-    ),
-  );
+  late FindPathUtils _findPathUtils;
 
-  late List<List<String>> paths = [[]];
-
-  bool? hasPath;
-
-  bool checkAroundIsSafe(int x, int y) {
-    if (x >= 0 && x < blocks.length && y >= 0 && y < blocks[0].length) {
-      return true;
-    }
-    return false;
-  }
-
-  bool checkPath(int x, int y, {int deep = 0}) {
-    if (checkAroundIsSafe(x, y) && blocks[x][y] == 0 && !checked[x][y]) {
-      checked[x][y] = true;
-      paths[paths.length - 1].add('$x$y');
-
-      if (x == blocks.length - 1 && y == blocks[0].length - 1) {
-        hasPath = true;
-        return true;
-      }
-
-      if (checkPath(x - 1, y)) return true;
-      if (checkPath(x, y - 1)) return true;
-      if (checkPath(x + 1, y)) return true;
-      if (checkPath(x, y + 1)) return true;
-    }
-    return false;
-  }
-
-  void checkEmptyArea() {
-    checkPath(0, 0);
-    print(paths.toString());
-    setState(() {});
+  @override
+  void initState() {
+    _findPathUtils = FindPathUtils(blocks);
+    super.initState();
   }
 
   @override
@@ -73,14 +39,17 @@ class _FindPathScreenState extends State<FindPathScreen> {
             _buildBlocks(),
             SizedBox(height: 32),
             MaterialButton(
-              onPressed: checkEmptyArea,
+              onPressed: () {
+                _findPathUtils.checkPath();
+                setState(() {});
+              },
               child: Text('Generate Path'),
               color: Colors.blue,
               textColor: Colors.white,
             ),
             SizedBox(height: 32),
             Text(
-              'Has Path? ${hasPath == true ? 'Yes' : hasPath == false ? 'No' : '-'}',
+              'Has Path? ${_findPathUtils.hasPath == true ? 'Yes' : _findPathUtils.hasPath == false ? 'No' : '-'}',
             ),
           ],
         ),
